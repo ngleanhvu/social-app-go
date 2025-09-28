@@ -2,6 +2,7 @@ package restaurantbiz
 
 import (
 	"context"
+	"crud-go/common"
 	"crud-go/module/restaurant/model"
 )
 
@@ -19,10 +20,10 @@ func NewCreateRestaurantBiz(store CreateRestaurantStore) *createRestaurantBiz {
 
 func (biz *createRestaurantBiz) CreateRestaurant(context context.Context, data *restaurantmodule.RestaurantCreate) error {
 	if err := data.Validate(); err != nil {
-		return err
+		return common.ErrInvalidRequest(err)
 	}
 	if err := biz.store.Create(context, data); err != nil {
-		return err
+		return common.ErrCannotCreateEntity(restaurantmodule.EntityName, err)
 	}
 	return nil
 }
