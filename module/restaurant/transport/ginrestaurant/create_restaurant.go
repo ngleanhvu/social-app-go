@@ -6,7 +6,7 @@ import (
 	"crud-go/module/restaurant/biz"
 	"crud-go/module/restaurant/model"
 	"crud-go/module/restaurant/storage"
-	"net/http"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,19 +18,24 @@ func CreateRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 
 		var data restaurantmodule.RestaurantCreate
 
+		go func() {
+			defer common.AppRecover()
+
+			arr := []int{}
+			log.Println(arr[0])
+		}()
+
 		if err := c.ShouldBind(&data); err != nil {
-			c.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
-			return
+			panic(common.ErrInvalidRequest(err))
 		}
 
 		store := restaurantstorage.NewSqlStore(db)
 		biz := restaurantbiz.NewCreateRestaurantBiz(store)
 
 		if err := biz.CreateRestaurant(c.Request.Context(), &data); err != nil {
-			c.JSON(http.StatusInternalServerError, err)
-			return
+			panic(err)
 		}
 
-		c.JSON(200, common.SimpleSuccessResponse(data.Id))
+		c.JSON(200, common.SimpleSuccessResponse(data.FakeId.String()))
 	}
 }

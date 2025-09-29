@@ -2,8 +2,8 @@ package restaurantbiz
 
 import (
 	"context"
+	"crud-go/common"
 	"crud-go/module/restaurant/model"
-	"errors"
 )
 
 type DeleteRestaurantStore interface {
@@ -28,15 +28,15 @@ func (b *deleteRestaurantBiz) DeleteRestaurant(context context.Context, id int) 
 	oldData, err := b.store.FindDataWithCondition(context, map[string]interface{}{"id": id})
 
 	if err != nil {
-		return err
+		return common.ErrEntityNotFound(restaurantmodule.EntityName, err)
 	}
 
 	if oldData.Status == 0 {
-		return errors.New("restaurant has been deleted")
+		return common.ErrEntityDeleted(restaurantmodule.EntityName, nil)
 	}
 
 	if err := b.store.Delete(context, id); err != nil {
-		return err
+		return common.ErrCannotDeleteEntity(restaurantmodule.EntityName, err)
 	}
 
 	return nil

@@ -29,7 +29,7 @@ func (biz *listRestaurantBiz) ListRestaurantBiz(ctx context.Context,
 	result, err := biz.store.ListDataWithCondition(ctx, filter, paging, moreKeys...)
 
 	if err != nil {
-		return nil, err
+		return nil, common.ErrCannotGetEntity(restaurantmodule.EntityName, err)
 	}
 
 	return result, nil

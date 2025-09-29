@@ -114,3 +114,29 @@ func ErrCannotCreateEntity(entity string, err error) *AppError {
 		fmt.Sprintf("ErrCannotCreate%s", entity),
 	)
 }
+
+func ErrCannotUpdateEntity(entity string, err error) *AppError {
+	return NewCustomErrorResponse(
+		err,
+		fmt.Sprintf("Cannot Update %s", strings.ToLower(entity)),
+		fmt.Sprintf("ErrCannotUpdate%s", entity),
+	)
+}
+
+func ErrEntityNotFound(entity string, err error) *AppError {
+	return NewCustomErrorResponse(
+		err,
+		fmt.Sprintf("%s not found", strings.ToLower(entity)),
+		fmt.Sprintf("Err%sNotFound", entity),
+	)
+}
+
+func ErrEntityDeleted(entity string, err error) *AppError {
+	return NewCustomErrorResponse(
+		err,
+		fmt.Sprintf("%s deleted", strings.ToLower(entity)),
+		fmt.Sprintf("Err%sDeleted", entity),
+	)
+}
+
+var RecordNotFound = errors.New("record not found")

@@ -29,7 +29,7 @@ func (s *sqlStore) ListDataWithCondition(
 	var total int64
 
 	if err := db.Count(&total).Error; err != nil {
-		return nil, err
+		return nil, common.ErrDB(err)
 	}
 
 	paging.Total = int(total)
@@ -41,7 +41,7 @@ func (s *sqlStore) ListDataWithCondition(
 		Offset(offset).
 		Order("id desc").
 		Find(&result).Error; err != nil {
-		return nil, err
+		return nil, common.ErrDB(err)
 	}
 
 	return result, nil

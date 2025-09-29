@@ -17,9 +17,7 @@ func ListRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 		var pagingData common.Paging
 
 		if err := c.ShouldBindQuery(&pagingData); err != nil {
-			c.JSON(400, gin.H{
-				"error": err.Error(),
-			})
+			panic(common.ErrInvalidRequest(err))
 			return
 		}
 
@@ -28,9 +26,7 @@ func ListRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 		var filter restaurantmodule.Filter
 
 		if err := c.ShouldBindQuery(&pagingData); err != nil {
-			c.JSON(400, gin.H{
-				"error": err.Error(),
-			})
+			panic(common.ErrInvalidRequest(err))
 			return
 		}
 
@@ -44,10 +40,12 @@ func ListRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 		result, err := biz.ListRestaurantBiz(c.Request.Context(), &filter, &pagingData)
 
 		if err != nil {
-			c.JSON(400, gin.H{
-				"error": err.Error(),
-			})
+			panic(err)
 			return
+		}
+
+		for i := range result {
+			result[i].Mask(false)
 		}
 
 		c.JSON(200, common.NewSuccessResponse(result, filter, pagingData))
