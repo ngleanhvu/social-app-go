@@ -10,5 +10,6 @@ func (s *sqlStore) Create(context context.Context, data *restaurantmodule.Restau
 	if err := s.db.Create(data).Error; err != nil {
 		return common.ErrDB(err)
 	}
+	data.GenUID(common.DbTypeRestaurant)
 	return nil
 }

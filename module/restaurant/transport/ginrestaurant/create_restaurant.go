@@ -18,16 +18,11 @@ func CreateRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 
 		var data restaurantmodule.RestaurantCreate
 
-		go func() {
-			defer common.AppRecover()
-
-			arr := []int{}
-			log.Println(arr[0])
-		}()
-
 		if err := c.ShouldBind(&data); err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
+
+		log.Println("CreateRestaurant", data)
 
 		store := restaurantstorage.NewSqlStore(db)
 		biz := restaurantbiz.NewCreateRestaurantBiz(store)
@@ -35,7 +30,7 @@ func CreateRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 		if err := biz.CreateRestaurant(c.Request.Context(), &data); err != nil {
 			panic(err)
 		}
-
+		
 		c.JSON(200, common.SimpleSuccessResponse(data.FakeId.String()))
 	}
 }

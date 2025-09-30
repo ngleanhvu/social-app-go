@@ -25,7 +25,7 @@ func ListRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 
 		var filter restaurantmodule.Filter
 
-		if err := c.ShouldBindQuery(&pagingData); err != nil {
+		if err := c.ShouldBindQuery(&filter); err != nil {
 			panic(common.ErrInvalidRequest(err))
 			return
 		}
