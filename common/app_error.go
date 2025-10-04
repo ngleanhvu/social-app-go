@@ -119,7 +119,7 @@ func ErrCannotUpdateEntity(entity string, err error) *AppError {
 	return NewCustomErrorResponse(
 		err,
 		fmt.Sprintf("Cannot Update %s", strings.ToLower(entity)),
-		fmt.Sprintf("ErrCannotUpdate%s", entity),
+		fmt.Sprintf("ErrCannotUpdate %s", entity),
 	)
 }
 
@@ -137,6 +137,13 @@ func ErrEntityDeleted(entity string, err error) *AppError {
 		fmt.Sprintf("%s deleted", strings.ToLower(entity)),
 		fmt.Sprintf("Err%sDeleted", entity),
 	)
+}
+
+func ErrNoPermission(err error) *AppError {
+	return NewCustomErrorResponse(
+		err,
+		"You have no permission",
+		"NO_PERMISSION")
 }
 
 var RecordNotFound = errors.New("record not found")

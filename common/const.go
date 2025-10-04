@@ -7,6 +7,11 @@ const (
 	DbTypeUser       = 2
 )
 
+const (
+	CurrentUser = "user"
+	SecretKey   = "12l3j12o31ij31oi3j12ij3i13jo1j"
+)
+
 func AppRecover() {
 	if err := recover(); err != nil {
 		log.Println("Recover err:", err)

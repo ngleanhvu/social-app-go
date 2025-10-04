@@ -5,6 +5,7 @@ import (
 	"crud-go/component/uploadprovider"
 	"crud-go/middleware"
 	ginrestaurant2 "crud-go/module/restaurant/transport/ginrestaurant"
+	"crud-go/module/user/transport/ginuser"
 	"fmt"
 	"log"
 	"os"
@@ -67,6 +68,9 @@ func main() {
 	v1.DELETE("/:id", ginrestaurant2.DeleteRestaurant(appContext))
 	v1.PUT("/:id", ginrestaurant2.UpdateRestaurant(appContext))
 	v1.GET("", ginrestaurant2.ListRestaurant(appContext))
+	v1.POST("register", ginuser.Register(appContext))
+	v1.POST("login", ginuser.Login(appContext))
+	v1.GET("profile", middleware.RequireAuth(appContext), ginuser.Profile(appContext))
 
 	r.Run()
 }
