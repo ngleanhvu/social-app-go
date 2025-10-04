@@ -18,6 +18,7 @@ type Restaurant struct {
 	Addr            string         `json:"addr" gorm:"column:addr"`
 	Type            RestaurantType `json:"type" gorm:"column:type"`
 	Logo            *common.Image  `json:"logo" gorm:"column:logo"`
+	Cover           *common.Images `json:"cover" gorm:"column:cover"`
 }
 
 func (Restaurant) TableName() string {
@@ -34,6 +35,7 @@ type RestaurantCreate struct {
 	Addr            string         `json:"addr" gorm:"column:addr"`
 	Type            RestaurantType `json:"type" gorm:"column:type"`
 	Logo            *common.Image  `json:"logo" gorm:"column:logo"`
+	Cover           *common.Images `json:"cover" gorm:"column:cover"`
 }
 
 func (data *RestaurantCreate) Validate() error {

@@ -2,10 +2,12 @@ package main
 
 import (
 	"crud-go/component/appctx"
+	"crud-go/component/uploadprovider"
 	"crud-go/middleware"
 	ginrestaurant2 "crud-go/module/restaurant/transport/ginrestaurant"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -40,7 +42,15 @@ func main() {
 	}
 	fmt.Printf("Mysql connect success\n")
 
-	appContext := appctx.NewAppContext(db)
+	s3BucketName := os.Getenv("S3_BUCKET_NAME")
+	s3Region := os.Getenv("S3_REGION")
+	s3ApiKey := os.Getenv("S3_API_KEY")
+	s3Secret := os.Getenv("S3_SECRET")
+	s3Domain := os.Getenv("S3_DOMAIN")
+
+	s3Provider := uploadprovider.NewS3Provider(s3BucketName, s3Region, s3ApiKey, s3Secret, s3Domain)
+
+	appContext := appctx.NewAppContext(db, s3Provider)
 
 	r := gin.Default()
 	r.Use(middleware.Recover(appContext))
