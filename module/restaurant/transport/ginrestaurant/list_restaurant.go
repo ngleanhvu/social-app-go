@@ -3,9 +3,10 @@ package ginrestaurant
 import (
 	"crud-go/common"
 	"crud-go/component/appctx"
-	restaurantbiz "crud-go/module/restaurant/biz"
 	restaurantmodule "crud-go/module/restaurant/model"
+	restaurantrepository "crud-go/module/restaurant/repository"
 	restaurantstorage "crud-go/module/restaurant/storage"
+	restaurantlikestorage "crud-go/module/restaurantlike/storage"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,9 +36,10 @@ func ListRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 		var result []restaurantmodule.Restaurant
 
 		store := restaurantstorage.NewSqlStore(db)
-		biz := restaurantbiz.NewListRestaurantBiz(store)
+		likeStore := restaurantlikestorage.NewSqlStore(db)
+		biz := restaurantrepository.NewListRestaurantRepo(store, likeStore)
 
-		result, err := biz.ListRestaurantBiz(c.Request.Context(), &filter, &pagingData)
+		result, err := biz.ListRestaurant(c.Request.Context(), &filter, &pagingData)
 
 		if err != nil {
 			panic(err)

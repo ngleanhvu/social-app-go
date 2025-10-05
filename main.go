@@ -5,6 +5,7 @@ import (
 	"crud-go/component/uploadprovider"
 	"crud-go/middleware"
 	ginrestaurant2 "crud-go/module/restaurant/transport/ginrestaurant"
+	"crud-go/module/restaurantlike/transport/ginrestaurantlike"
 	"crud-go/module/user/transport/ginuser"
 	"fmt"
 	"log"
@@ -71,6 +72,15 @@ func main() {
 	v1.POST("register", ginuser.Register(appContext))
 	v1.POST("login", ginuser.Login(appContext))
 	v1.GET("profile", middleware.RequireAuth(appContext), ginuser.Profile(appContext))
+	v1.POST("/:id/like",
+		middleware.RequireAuth(appContext),
+		ginrestaurantlike.UserLikeRestaurant(appContext),
+	)
+	v1.POST("/:id/dislike",
+		middleware.RequireAuth(appContext),
+		ginrestaurantlike.UserDislikeRestaurant(appContext),
+	)
+	v1.GET("/:id/user-liked", ginrestaurantlike.ListUserLikeRestaurant(appContext))
 
 	r.Run()
 }
