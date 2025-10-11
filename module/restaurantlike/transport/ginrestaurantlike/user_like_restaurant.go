@@ -28,7 +28,7 @@ func UserLikeRestaurant(appCtx appctx.AppContext) gin.HandlerFunc {
 
 		store := restaurantlikestorage.NewSqlStore(db)
 		restaurantStore := restaurantstorage.NewSqlStore(db)
-		biz := restaurantlikebiz.NewUserLikeRestaurantBiz(store, restaurantStore)
+		biz := restaurantlikebiz.NewUserLikeRestaurantBiz(store, restaurantStore, restaurantStore)
 
 		if err := biz.UserLikeRestaurantBiz(c.Request.Context(), &data); err != nil {
 			panic(err)

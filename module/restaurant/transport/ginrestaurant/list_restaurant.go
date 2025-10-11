@@ -6,7 +6,6 @@ import (
 	restaurantmodule "crud-go/module/restaurant/model"
 	restaurantrepository "crud-go/module/restaurant/repository"
 	restaurantstorage "crud-go/module/restaurant/storage"
-	restaurantlikestorage "crud-go/module/restaurantlike/storage"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,8 +35,8 @@ func ListRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 		var result []restaurantmodule.Restaurant
 
 		store := restaurantstorage.NewSqlStore(db)
-		likeStore := restaurantlikestorage.NewSqlStore(db)
-		biz := restaurantrepository.NewListRestaurantRepo(store, likeStore)
+		//likeStore := restaurantlikestorage.NewSqlStore(db)
+		biz := restaurantrepository.NewListRestaurantRepo(store)
 
 		result, err := biz.ListRestaurant(c.Request.Context(), &filter, &pagingData)
 
