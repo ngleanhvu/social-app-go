@@ -28,7 +28,8 @@ func UserDislikeRestaurant(appCtx appctx.AppContext) gin.HandlerFunc {
 
 		store := restaurantlikestorage.NewSqlStore(db)
 		restaurantStore := restaurantstorage.NewSqlStore(db)
-		biz := restaurantlikebiz.NewDislikeRestaurantBiz(store, restaurantStore, restaurantStore)
+		pb := appCtx.GetPubSub()
+		biz := restaurantlikebiz.NewDislikeRestaurantBiz(store, restaurantStore, pb)
 
 		if err := biz.UserDislikeRestaurantBiz(c.Request.Context(), &data); err != nil {
 			panic(err)

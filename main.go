@@ -7,6 +7,8 @@ import (
 	ginrestaurant2 "crud-go/module/restaurant/transport/ginrestaurant"
 	"crud-go/module/restaurantlike/transport/ginrestaurantlike"
 	"crud-go/module/user/transport/ginuser"
+	"crud-go/pubsub/pblocal"
+	subscriber2 "crud-go/subscriber"
 	"fmt"
 	"log"
 	"os"
@@ -39,6 +41,7 @@ func main() {
 	dsn := "root:1234@tcp(127.0.0.1:3306)/food_delivery_db?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	db = db.Debug()
+	pb := pblocal.NewLocalPubSub()
 	if err != nil {
 		log.Fatalln(fmt.Errorf("mysql connect err: %v", err))
 	}
@@ -52,7 +55,12 @@ func main() {
 
 	s3Provider := uploadprovider.NewS3Provider(s3BucketName, s3Region, s3ApiKey, s3Secret, s3Domain)
 
-	appContext := appctx.NewAppContext(db, s3Provider)
+	appContext := appctx.NewAppContext(db, s3Provider, pb)
+
+	// setup subscriber
+	//subscriber.Setup(appContext, context.Background())
+	subscriber := subscriber2.NewEngine(appContext)
+	subscriber.Start()
 
 	r := gin.Default()
 	r.Use(middleware.Recover(appContext))

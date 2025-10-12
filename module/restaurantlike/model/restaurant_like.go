@@ -30,6 +30,10 @@ func (RestaurantLikeCreate) TableName() string {
 	return RestaurantLike{}.TableName()
 }
 
+func (r *RestaurantLikeCreate) GetRestaurantId() int {
+	return r.RestaurantId
+}
+
 type RestaurantLikeUpdate struct {
 	RestaurantId int        `json:"restaurant_id" gorm:"restaurant_id"`
 	UserId       int        `json:"user_id" gorm:"user_id"`
@@ -38,6 +42,10 @@ type RestaurantLikeUpdate struct {
 
 func (RestaurantLikeUpdate) TableName() string {
 	return RestaurantLike{}.TableName()
+}
+
+func (r *RestaurantLikeUpdate) GetRestaurantId() int {
+	return r.RestaurantId
 }
 
 var (

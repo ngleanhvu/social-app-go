@@ -21,3 +21,8 @@ func AppRecover() {
 		log.Println("Recover err:", err)
 	}
 }
+
+const (
+	TopicUserLikeRestaurant    = "TopicUserLikeRestaurant"
+	TopicUserDislikeRestaurant = "TopicUserDislikeRestaurant"
+)

@@ -3,19 +3,18 @@ package restaurantlikebiz
 import (
 	"context"
 	"crud-go/common"
-	"crud-go/component/asyncjob"
 	restaurantmodule "crud-go/module/restaurant/model"
 	restaurantlikemodel "crud-go/module/restaurantlike/model"
-	"log"
+	"crud-go/pubsub"
 )
 
 type UserLikeRestaurantStore interface {
 	Create(ctx context.Context, data *restaurantlikemodel.RestaurantLikeCreate) error
 }
 
-type IncreaseLikeCountStore interface {
-	IncreaseLikeCount(ctx context.Context, id int) error
-}
+//type IncreaseLikeCountStore interface {
+//	IncreaseLikeCount(ctx context.Context, id int) error
+//}
 
 type RestaurantStore interface {
 	FindDataWithCondition(ctx context.Context,
@@ -24,15 +23,20 @@ type RestaurantStore interface {
 }
 
 type userLikeRestaurantBiz struct {
-	store                  UserLikeRestaurantStore
-	restaurantStore        RestaurantStore
-	increaseLikeCountStore IncreaseLikeCountStore
+	store           UserLikeRestaurantStore
+	restaurantStore RestaurantStore
+	//increaseLikeCountStore IncreaseLikeCountStore
+	pb pubsub.PubSub
 }
 
-func NewUserLikeRestaurantBiz(store UserLikeRestaurantStore, restaurantStore RestaurantStore, increaseLikeCountStore IncreaseLikeCountStore) *userLikeRestaurantBiz {
+func NewUserLikeRestaurantBiz(store UserLikeRestaurantStore,
+	restaurantStore RestaurantStore,
+	//increaseLikeCountStore IncreaseLikeCountStore,
+	pb pubsub.PubSub) *userLikeRestaurantBiz {
 	return &userLikeRestaurantBiz{store: store,
-		restaurantStore:        restaurantStore,
-		increaseLikeCountStore: increaseLikeCountStore,
+		restaurantStore: restaurantStore,
+		//increaseLikeCountStore: increaseLikeCountStore,
+		pb: pb,
 	}
 }
 
@@ -49,13 +53,15 @@ func (biz *userLikeRestaurantBiz) UserLikeRestaurantBiz(ctx context.Context,
 		return restaurantlikemodel.ErrCannonLikeRestaurant
 	}
 
-	j := asyncjob.NewJob(func(ctx context.Context) error {
-		return biz.increaseLikeCountStore.IncreaseLikeCount(ctx, data.RestaurantId)
-	})
+	biz.pb.Publish(ctx, common.TopicUserLikeRestaurant, pubsub.NewMessage(data))
 
-	if err := asyncjob.NewGroup(true, j).Run(ctx); err != nil {
-		log.Println(err)
-	}
+	//j := asyncjob.NewJob(func(ctx context.Context) error {
+	//	return biz.increaseLikeCountStore.IncreaseLikeCount(ctx, data.RestaurantId)
+	//})
+	//
+	//if err := asyncjob.NewGroup(true, j).Run(ctx); err != nil {
+	//	log.Println(err)
+	//}
 
 	return nil
 }
